@@ -4,15 +4,18 @@ go 1.22.1
 
 require (
 	cloud.google.com/go/pubsub v1.37.0
+	cloud.google.com/go/vertexai v0.7.1
 	github.com/siuyin/dflt v0.0.0-20230329062002-0475f4d54412
 	google.golang.org/api v0.167.0
 )
 
 require (
 	cloud.google.com/go v0.112.1 // indirect
+	cloud.google.com/go/aiplatform v1.60.0 // indirect
 	cloud.google.com/go/compute v1.24.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/iam v1.1.6 // indirect
+	cloud.google.com/go/longrunning v0.5.5 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
