@@ -1,0 +1,50 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.room-container {
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.room-container h2 {
+  margin-bottom: 10px;
+}
+
+.room {
+  display: flex;
+  justify-content: space-between;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button.on {
+  background-color: yellow;
+}
+
+button.off {
+  background-color: grey;
+}
+
+#room12-aircon.on,
+#room34-aircon.on {
+  background-color: green;
+}
+
+#room12-aircon.off,
+#room34-aircon.off {
+  background-color: red;
+}
