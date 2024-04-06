@@ -38,6 +38,7 @@ func msgHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println(msg)
 	resp, err := callVertexAI(&msg)
 	if err != nil {
 		fmt.Fprintf(w, "callVertexAI: %v", err)
@@ -63,7 +64,7 @@ func callVertexAI(msg *sensorMsg) (*controlRoomMsg, error) {
 	defer client.Close()
 
 	model := client.GenerativeModel("gemini-1.0-pro-vision-001")
-	model.SetTemperature(0.5)
+	model.SetTemperature(0.9)
 	resp, err := model.GenerateContent(ctx, genai.Text("what is the meaning of life?"))
 	if err != nil {
 		return &controlRoomMsg{}, fmt.Errorf("model.GenerateContent: %v", err)
