@@ -48,7 +48,7 @@
             </q-card-section>
       
             <q-card-section>
-              {{ room1L }}
+              {{ room1A }}
             </q-card-section>
       
           </q-card>
@@ -59,7 +59,7 @@
               </q-card-section>
         
               <q-card-section>
-                {{ room2L }}
+                {{ room2A }}
               </q-card-section>
         
          </q-card>
@@ -73,64 +73,61 @@ var intervalId;
 const app = Vue.createApp({
   data () {
     return {
-      room1L: 'R1L lorerm asdasdi sdafsd fsadfasdf sdfasdf asdfasd ajsdfiasfjasd',
+      room1L: '',
       R1LisOn: 1,
-      room2L: 'R2L lorerm asdasdi sdafsd fsadfasdf sdfasdf asdfasd ajsdfiasfjasd',
+      room2L: '',
       R2LisOn: 0,
-      room1A: 'R1L lorerm asdasdi sdafsd fsadfasdf sdfasdf asdfasd ajsdfiasfjasd',
+      room1A: '',
       R1AisOn: 1,
-      room2A: 'R2L lorerm asdasdi sdafsd fsadfasdf sdfasdf asdfasd ajsdfiasfjasd',
+      room2A: '',
       R2AisOn: 0,
     }
   },
   mounted(){
     var _ = this;
+    
     intervalId = setInterval(() => {
         fetch('https://spgroup24.alwaysdata.net/lights/12')
         .then(res => {
             res.json().then(data => {
-                var jr = JSON.parse(data.json);
+                var jr = JSON.parse(data[0].json);
                 _.room1L = jr.text;
                 _.R1LisOn = jr.on_ff;
             });
-        });
-
-        fetch('https://spgroup24.alwaysdata.net/lights/12')
-        .then(res => {
-            res.json().then(data => {
-                var jr = JSON.parse(data.json);
-                _.room1L = jr.text;
-                _.R1LisOn = jr.on_ff;
-            });
-        });
+        })
+        .catch(err => console.log(err));
 
         fetch('https://spgroup24.alwaysdata.net/lights/34')
         .then(res => {
             res.json().then(data => {
-                var jr = JSON.parse(data.json);
+                var jr = JSON.parse(data[0].json);
                 _.room2L = jr.text;
                 _.R2LisOn = jr.on_ff;
             });
-        });
+        })
+        .catch(err => console.log(err));
 
         fetch('https://spgroup24.alwaysdata.net/aircon/12')
         .then(res => {
             res.json().then(data => {
-                var jr = JSON.parse(data.json);
-                _.room2A = jr.text;
+                var jr = JSON.parse(data[0].json);
+                _.room1A = jr.text;
+                console.log(jr.text)
                 _.R1AisOn = jr.on_ff;
             });
-        });
+        })
+        .catch(err => console.log(err));
 
         fetch('https://spgroup24.alwaysdata.net/aircon/34')
         .then(res => {
             res.json().then(data => {
-                var jr = JSON.parse(data.json);
+                var jr = JSON.parse(data[0].json);
                 _.room2A = jr.text;
                 _.R2AisOn = jr.on_ff;
             });
         })
         .catch(err => console.log(err));
+
     }, 1000);
   }
 })
