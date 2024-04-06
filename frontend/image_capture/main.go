@@ -60,7 +60,7 @@ func main() {
 	})
 	http.Handle("/", http.FileServer(http.FS(public.Content))) // uncomment for deployment
 
-	log.Fatal(http.ListenAndServe(":"+dflt.EnvString("HTTP_PORT", "8081"), nil))
+	log.Fatal(http.ListenAndServe(":"+dflt.EnvString("HTTP_PORT", "8080"), nil))
 }
 
 func callVertexAI(b []byte, roomID string) string {
