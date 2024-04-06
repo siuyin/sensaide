@@ -117,8 +117,10 @@ func recommend(msg *vertexResponse, roomID string) {
 
 	if msg.Action == "increase heating" {
 		crMsg.OnOff = 0
+		updateControlRoom(&crMsg)
 	} else {
 		crMsg.OnOff = 1
+		updateControlRoom(&crMsg)
 	}
 }
 
