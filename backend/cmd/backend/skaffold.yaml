@@ -1,0 +1,9 @@
+apiVersion: skaffold/v4beta8
+kind: Config
+
+build:
+  artifacts:
+  - image: siuyin/junk
+  local:
+    push: true
+    # push: false
