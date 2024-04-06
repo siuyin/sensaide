@@ -22,16 +22,18 @@ const projectID = "lsy0318"
 const location = "us-west1"
 
 type vertexResponse struct {
-	Action     string
-	LocationID string
-	Reason     string
+	Action        string
+	LocationID    string
+	Reason        string
+	PeoplePresent bool
 }
 
 type controlRoomMessage struct {
-	RoomID string
-	Text   string `json:"text"`
-	Device string
-	OnOff  int `json:"on_off"`
+	RoomID        string
+	Text          string `json:"text"`
+	Device        string
+	OnOff         int `json:"on_off"`
+	PeoplePresent bool
 }
 
 func main() {
@@ -73,7 +75,7 @@ func callVertexAI(b []byte, roomID string) string {
 	model := client.GenerativeModel("gemini-1.0-pro-vision-001")
 	model.SetTemperature(0.3)
 	img := genai.ImageData("jpeg", b)
-	prompt := genai.Text(fmt.Sprintf(`Tell me about the people, if any, in the image at Location ID:"%s" do they look like they can benefit from better cooling or heating. Explain your reasoning. Finally mention if additional cooling or warming is warranted by stating action: increase cooling or action: increase warming in your response. or action: no action required Also include the Location ID in your response. output in JSON format with fields action, reason, locationID`, roomID))
+	prompt := genai.Text(fmt.Sprintf(`Tell me about the people, if any (PeoplePresent true or false), in the image at Location ID:"%s" do they look like they can benefit from better cooling or heating. Explain your reasoning. Finally mention if additional cooling or warming is warranted by stating action: increase cooling or action: increase warming in your response. or action: no action required Also include the Location ID in your response. output in JSON format with fields PeoplePresent, Action, Reason, LocationID`, roomID))
 	resp, err := model.GenerateContent(ctx, img, prompt)
 	if err != nil {
 		log.Printf("error on generate content: %v", err)
@@ -87,26 +89,37 @@ func callVertexAI(b []byte, roomID string) string {
 		log.Printf("failed to unmarshal result: %s", err)
 	}
 
-	crMsg := recommend(&msg)
+	recommend(&msg, roomID)
 
-	if err := updateControlRoom(crMsg); err != nil {
-		log.Printf("updateControlRoom is failed: %s", err)
-	}
 	return result
 }
-func recommend(msg *vertexResponse) *controlRoomMessage {
+
+func recommend(msg *vertexResponse, roomID string) {
 	crMsg := controlRoomMessage{}
 	crMsg.Device = "aircon"
-	crMsg.RoomID = "12"
+	crMsg.RoomID = roomID
 	crMsg.Text = msg.Reason
+
+	if !msg.PeoplePresent {
+		crMsg.OnOff = 0
+		updateControlRoom(&crMsg)
+		crMsg.Device = "lights"
+		updateControlRoom(&crMsg)
+
+		return
+	}
+
+	if msg.PeoplePresent {
+		crMsg.OnOff = 1
+		crMsg.Device = "lights"
+		updateControlRoom(&crMsg)
+	}
 
 	if msg.Action == "increase heating" {
 		crMsg.OnOff = 0
 	} else {
 		crMsg.OnOff = 1
 	}
-
-	return &crMsg
 }
 
 func getBytes(r *http.Request) []byte {
