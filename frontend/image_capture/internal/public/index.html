@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="clean simple demo of image recording from a browser attached webcam">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ImgRec</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="stylesheet" href="simple.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Image Recorder</h1>
+    <div>
+        <button id="startCam">WebCam Start</button>
+        <button id="stopCam">WebCam Stop</button>
+    </div>
+
+    <video id="video" width="640" height="360" autoplay muted></video>
+    <button id="capture-button" class="min">Capture Image</button>
+
+    <a id="download-link" hidden href="#" download>Download Image</a>
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>
