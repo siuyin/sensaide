@@ -17,7 +17,7 @@
 <div id="q-app" style="min-height: 100vh;">
 <div class="q-pa-md items-start  q-gutter-md">
     <div class="row  q-gutter-md">
-    <q-card class="text-white" :class="{ 'bg-green': R1LisOn, 'bg-red': !R1LisOn }">
+    <q-card id="room1l" class="text-white" :class="{ 'bg-green': R1LisOn, 'bg-red': !R1LisOn }">
       <q-card-section>
         <div class="text-h6">Room 12</div>
         <div class="text-subtitle2">Lights</div>
@@ -28,7 +28,7 @@
       </q-card-section>
 
     </q-card>
-    <q-card class="text-white" :class="{ 'bg-green': R2LisOn, 'bg-red': !R2LisOn }">
+    <q-card id="room2l" class="text-white" :class="{ 'bg-green': R2LisOn, 'bg-red': !R2LisOn }">
         <q-card-section>
           <div class="text-h6">Room 32</div>
           <div class="text-subtitle2">Lights</div>
@@ -41,7 +41,7 @@
       </q-card>
     </div>
     <div class="row  q-gutter-md">
-        <q-card class="text-white" :class="{ 'bg-blue': R1AisOn, 'bg-grey': !R1AisOn }">
+        <q-card id="room1a" class="text-white" :class="{ 'bg-blue': R1AisOn, 'bg-grey': !R1AisOn }">
             <q-card-section>
               <div class="text-h6">Room 12</div>
               <div class="text-subtitle2">Aircon</div>
@@ -52,7 +52,7 @@
             </q-card-section>
       
           </q-card>
-          <q-card class="text-white" :class="{ 'bg-blue': R2AisOn, 'bg-grey': !R2AisOn }">
+          <q-card id="room2a" class="text-white" :class="{ 'bg-blue': R2AisOn, 'bg-grey': !R2AisOn }">
               <q-card-section>
                 <div class="text-h6">Room 32</div>
                 <div class="text-subtitle2">Aircon</div>
@@ -74,13 +74,13 @@ const app = Vue.createApp({
   data () {
     return {
       room1L: '',
-      R1LisOn: 1,
+      R1LisOn: true,
       room2L: '',
-      R2LisOn: 0,
+      R2LisOn: false,
       room1A: '',
-      R1AisOn: 1,
+      R1AisOn: false,
       room2A: '',
-      R2AisOn: 0,
+      R2AisOn: false,
     }
   },
   mounted(){
@@ -92,7 +92,8 @@ const app = Vue.createApp({
             res.json().then(data => {
                 var jr = JSON.parse(data[0].json);
                 _.room1L = jr.text;
-                _.R1LisOn = jr.on_ff;
+                if(jr.on_off ==  1) _.R1LisOn = true;
+                else _.R1LisOn = false;
             });
         })
         .catch(err => console.log(err));
@@ -102,7 +103,8 @@ const app = Vue.createApp({
             res.json().then(data => {
                 var jr = JSON.parse(data[0].json);
                 _.room2L = jr.text;
-                _.R2LisOn = jr.on_ff;
+                if(jr.on_off ==  1) _.R2LisOn = true;
+                else _.R2LisOn = false;
             });
         })
         .catch(err => console.log(err));
@@ -112,8 +114,8 @@ const app = Vue.createApp({
             res.json().then(data => {
                 var jr = JSON.parse(data[0].json);
                 _.room1A = jr.text;
-                console.log(jr.text)
-                _.R1AisOn = jr.on_ff;
+                if(jr.on_off ==  1) _.R1AisOn = true;
+                else _.R1AisOn = false;
             });
         })
         .catch(err => console.log(err));
@@ -123,7 +125,8 @@ const app = Vue.createApp({
             res.json().then(data => {
                 var jr = JSON.parse(data[0].json);
                 _.room2A = jr.text;
-                _.R2AisOn = jr.on_ff;
+                if(jr.on_off ==  1) _.R2AisOn = true;
+                else _.R2AisOn = false;
             });
         })
         .catch(err => console.log(err));
