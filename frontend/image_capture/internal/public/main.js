@@ -33,6 +33,7 @@ async function captureImage() {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     const reader = new FileReader();
+    const roomID = document.getElementById("roomid").innerText;
 
     canvas.width = video.width;
     canvas.height = video.height;
@@ -42,9 +43,10 @@ async function captureImage() {
       const formData = new FormData();
       formData.append("data", blob);
 
-      const response = await fetch("https://sensaide-onsvm4sjba-uw.a.run.app/img",{
+      //https://sensaide-onsvm4sjba-uw.a.run.app/img
+      const response = await fetch(`http://localhost:8081/img?roomID=${roomID}`,{
         method: "POST",
-        body: formData
+        body: formData,
       });
 
       if (!response.ok){

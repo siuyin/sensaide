@@ -41,8 +41,11 @@ func main() {
 
 	http.HandleFunc("/img", func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
+		r.ParseForm()
+		roomID := r.FormValue("roomID")
+
 		b := getBytes(r)
-		res := callVertexAI(b)
+		res := callVertexAI(b, roomID)
 
 		fmt.Fprintf(w, "%s", res)
 	})
@@ -58,7 +61,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+dflt.EnvString("HTTP_PORT", "8081"), nil))
 }
 
-func callVertexAI(b []byte) string {
+func callVertexAI(b []byte, roomID string) string {
 	ctx := context.Background()
 
 	client, err := genai.NewClient(ctx, projectID, location)
@@ -70,7 +73,7 @@ func callVertexAI(b []byte) string {
 	model := client.GenerativeModel("gemini-1.0-pro-vision-001")
 	model.SetTemperature(0.3)
 	img := genai.ImageData("jpeg", b)
-	prompt := genai.Text("Tell me about the people, if any, in the image at Location ID:444 do they look like they can benefit from better cooling or heating. Explain your reasoning. Finally mention if additional cooling or warming is warranted by stating action: increase cooling or action: increase warming in your response. or action: no action required Also include the Location ID in your response. output in JSON format with fields Action, Reason, LocationID")
+	prompt := genai.Text(fmt.Sprintf(`Tell me about the people, if any, in the image at Location ID:"%s" do they look like they can benefit from better cooling or heating. Explain your reasoning. Finally mention if additional cooling or warming is warranted by stating action: increase cooling or action: increase warming in your response. or action: no action required Also include the Location ID in your response. output in JSON format with fields action, reason, locationID`, roomID))
 	resp, err := model.GenerateContent(ctx, img, prompt)
 	if err != nil {
 		log.Printf("error on generate content: %v", err)
