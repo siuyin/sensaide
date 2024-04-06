@@ -2,29 +2,50 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
-
-	"cloud.google.com/go/pubsub"
-	"github.com/siuyin/sensaide/backend/internal/msg"
 )
 
 func main() {
-	msg.Sub.Receive(context.Background(), msgHandler)
+	http.HandleFunc("/api", msgHandler)
+	// msg.Sub.Receive(context.Background(), msgHandler)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
-func msgHandler(ctx context.Context, m *pubsub.Message) {
-	// handle incoming messages
-	msg := parse(m)
-	for _, u := range msg.URL {
-		fmt.Println(u)
+type controlRoomMsg struct {
+	RoomID string
+	Text   string `json:"text"`
+	Device string
+	OnOff  int `json:"on_off"`
+}
+
+func msgHandler(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	msg := pubsubMsg{}
+	dat, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("post read: %v", err)
 	}
-	// call Vertex AI
-	// update Control Room UI
-	updControlRoom()
+
+	if err := json.Unmarshal(dat, &msg); err != nil {
+		log.Printf("parse: %v", err)
+	}
+
+	resp := callVertexAI(&msg)
+	updControlRoom(resp)
+}
+
+func callVertexAI(msg *pubsubMsg) *controlRoomMsg {
+	return &controlRoomMsg{
+		RoomID: msg.RoomID,
+		Text:   "test message from vertex AI call",
+		OnOff:  1,
+		Device: "aircon",
+	}
 }
 
 type pubsubMsg struct {
@@ -33,18 +54,9 @@ type pubsubMsg struct {
 	URL       []string
 }
 
-func parse(m *pubsub.Message) *pubsubMsg {
-	msg := pubsubMsg{}
-	if err := json.Unmarshal(m.Data, &msg); err != nil {
-		log.Printf("parse: %v", err)
-	}
-
-	m.Ack()
-	return &msg
-}
-
-func updControlRoom() {
-	const URL = "https://spgroup24.alwaysdata.net/lights/34"
-	buf := bytes.NewBufferString("{\"text\":\"test message\",\"on_off\":1}")
+func updControlRoom(msg *controlRoomMsg) {
+	//const URL = "https://spgroup24.alwaysdata.net/lights/34"
+	URL := fmt.Sprintf("https://spgroup24.alwaysdata.net/%v/%v", msg.Device, msg.RoomID)
+	buf := bytes.NewBufferString(fmt.Sprintf("{\"text\":\"%s\",\"on_off\":%d}", msg.Text, msg.OnOff))
 	http.Post(URL, "application/json", buf)
 }
