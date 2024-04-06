@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang='en' class=''>
+
+<head>
+
+  <meta charset='UTF-8'>
+  <title>Front Backup</title>
+
+  <meta name="robots" content="noindex">
+
+  
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quasar@2.15.2/dist/quasar.min.css">
+</head>
+
+<body>
+<div id="q-app" style="min-height: 100vh;">
+<div class="q-pa-md items-start  q-gutter-md">
+    <div class="row  q-gutter-md">
+    <q-card class="text-white" :class="{ 'bg-green': R1LisOn, 'bg-red': !R1LisOn }">
+      <q-card-section>
+        <div class="text-h6">Room 12</div>
+        <div class="text-subtitle2">Lights</div>
+      </q-card-section>
+
+      <q-card-section>
+        {{ room1L }}
+      </q-card-section>
+
+    </q-card>
+    <q-card class="text-white" :class="{ 'bg-green': R2LisOn, 'bg-red': !R2LisOn }">
+        <q-card-section>
+          <div class="text-h6">Room 32</div>
+          <div class="text-subtitle2">Lights</div>
+        </q-card-section>
+  
+        <q-card-section>
+          {{ room2L }}
+        </q-card-section>
+  
+      </q-card>
+    </div>
+    <div class="row  q-gutter-md">
+        <q-card class="text-white" :class="{ 'bg-blue': R1AisOn, 'bg-grey': !R1AisOn }">
+            <q-card-section>
+              <div class="text-h6">Room 12</div>
+              <div class="text-subtitle2">Aircon</div>
+            </q-card-section>
+      
+            <q-card-section>
+              {{ room1L }}
+            </q-card-section>
+      
+          </q-card>
+          <q-card class="text-white" :class="{ 'bg-blue': R2AisOn, 'bg-grey': !R2AisOn }">
+              <q-card-section>
+                <div class="text-h6">Room 32</div>
+                <div class="text-subtitle2">Aircon</div>
+              </q-card-section>
+        
+              <q-card-section>
+                {{ room2L }}
+              </q-card-section>
+        
+         </q-card>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quasar@2.15.2/dist/quasar.umd.prod.js"></script>
+<script>
+var intervalId;
+const app = Vue.createApp({
+  data () {
+    return {
+      room1L: 'R1L lorerm asdasdi sdafsd fsadfasdf sdfasdf asdfasd ajsdfiasfjasd',
+      R1LisOn: 1,
+      room2L: 'R2L lorerm asdasdi sdafsd fsadfasdf sdfasdf asdfasd ajsdfiasfjasd',
+      R2LisOn: 0,
+      room1A: 'R1L lorerm asdasdi sdafsd fsadfasdf sdfasdf asdfasd ajsdfiasfjasd',
+      R1AisOn: 1,
+      room2A: 'R2L lorerm asdasdi sdafsd fsadfasdf sdfasdf asdfasd ajsdfiasfjasd',
+      R2AisOn: 0,
+    }
+  },
+  mounted(){
+    var _ = this;
+    intervalId = setInterval(() => {
+        fetch('https://spgroup24.alwaysdata.net/lights/12')
+        .then(res => {
+            res.json().then(data => {
+                var jr = JSON.parse(data.json);
+                _.room1L = jr.text;
+                _.R1LisOn = jr.on_ff;
+            });
+        });
+
+        fetch('https://spgroup24.alwaysdata.net/lights/12')
+        .then(res => {
+            res.json().then(data => {
+                var jr = JSON.parse(data.json);
+                _.room1L = jr.text;
+                _.R1LisOn = jr.on_ff;
+            });
+        });
+
+        fetch('https://spgroup24.alwaysdata.net/lights/34')
+        .then(res => {
+            res.json().then(data => {
+                var jr = JSON.parse(data.json);
+                _.room2L = jr.text;
+                _.R2LisOn = jr.on_ff;
+            });
+        });
+
+        fetch('https://spgroup24.alwaysdata.net/aircon/12')
+        .then(res => {
+            res.json().then(data => {
+                var jr = JSON.parse(data.json);
+                _.room2A = jr.text;
+                _.R1AisOn = jr.on_ff;
+            });
+        });
+
+        fetch('https://spgroup24.alwaysdata.net/aircon/34')
+        .then(res => {
+            res.json().then(data => {
+                var jr = JSON.parse(data.json);
+                _.room2A = jr.text;
+                _.R2AisOn = jr.on_ff;
+            });
+        })
+        .catch(err => console.log(err));
+    }, 1000);
+  }
+})
+
+app.use(Quasar, { config: {} })
+app.mount('#q-app')
+</script>
+</body>
+
+</html>
