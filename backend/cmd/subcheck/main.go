@@ -10,6 +10,10 @@ import (
 )
 
 func main() {
+	if msg.Sub == nil {
+		log.Fatal("msg not initialized")
+	}
+
 	ctx := context.Background()
 	for {
 		if err := msg.Sub.Receive(ctx, subHandler); err != nil {
