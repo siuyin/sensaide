@@ -172,8 +172,10 @@ func deviceControl(msg *vertexResponse, dev string) (*controlRoomMessage, error)
 	}
 	if crMsg.PeoplePresent {
 		crMsg.OnOff = 1
+	} else {
+		crMsg.OnOff = 0
 	}
-	if msg.Action == "increase heating" && crMsg.Device == "aircon" {
+	if msg.Action == "increase heating" && crMsg.Device == "aircon" && crMsg.PeoplePresent {
 		crMsg.OnOff = 0
 	} else {
 		crMsg.OnOff = 1
