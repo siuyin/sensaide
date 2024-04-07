@@ -89,40 +89,9 @@ func callVertexAI(b []byte, roomID string) string {
 		log.Printf("failed to unmarshal result: %s", err)
 	}
 
-	recommend(&msg, roomID)
+	updateControlRoom(&msg)
 
 	return result
-}
-
-func recommend(msg *vertexResponse, roomID string) {
-	crMsg := controlRoomMessage{}
-	crMsg.Device = "aircon"
-	crMsg.RoomID = roomID
-	crMsg.Text = msg.Reason
-
-	if !msg.PeoplePresent {
-		crMsg.OnOff = 0
-		updateControlRoom(&crMsg)
-		crMsg.Device = "lights"
-		updateControlRoom(&crMsg)
-
-		return
-	}
-
-	if msg.PeoplePresent {
-		crMsg.OnOff = 1
-		crMsg.Device = "lights"
-		updateControlRoom(&crMsg)
-	}
-
-	crMsg.Device = "aircon"
-	if msg.Action == "increase heating" {
-		crMsg.OnOff = 0
-		updateControlRoom(&crMsg)
-	} else {
-		crMsg.OnOff = 1
-		updateControlRoom(&crMsg)
-	}
 }
 
 func getBytes(r *http.Request) []byte {
@@ -160,19 +129,54 @@ func stripHeaderAndFooter(s string) string {
 	return r
 }
 
-func updateControlRoom(msg *controlRoomMessage) error {
-	URL := fmt.Sprintf("https://spgroup24.alwaysdata.net/%v/%v", msg.Device, msg.RoomID)
-	log.Println(URL)
+func updateControlRoom(msg *vertexResponse) error {
+	crMsg, err := deviceControl(msg, "aircon")
+	if err!=nil {
+		return fmt.Errorf("updateControlRoom: deviceControl: %v",err)
+	}
+	if err := callBackendUI(crMsg); err != nil {
+		return fmt.Errorf("updateControlRoom: callBackendUI: %v",err)
+	}
 
-	dat, err := json.Marshal(msg)
+	crMsg, err = deviceControl(msg, "lights")
+	if err!=nil {
+		return fmt.Errorf("updateControlRoom: deviceControl: %v",err)
+	}
+	if err := callBackendUI(crMsg); err != nil {
+		return fmt.Errorf("updateControlRoom: callBackendUI: %v",err)
+	}
+
+	return nil
+}
+func callBackendUI(crMsg *controlRoomMessage) error {
+	dat, err := json.Marshal(crMsg)
 	if err != nil {
 		return fmt.Errorf("updateControlRoom: json.Marshal: %s", err)
 	}
 
+	URL := fmt.Sprintf("https://spgroup24.alwaysdata.net/%v/%v", crMsg.Device, crMsg.RoomID)
+	log.Println(URL)
 	resp, err := http.Post(URL, "application/json", bytes.NewBuffer(dat))
 	if err != nil {
 		return fmt.Errorf("updateControlRoom: http.Post: %v: %v", resp, err)
 	}
-
 	return nil
+}
+func deviceControl(msg *vertexResponse, dev string) (*controlRoomMessage, error) {
+	crMsg := controlRoomMessage{
+		Device:        dev,
+		RoomID:        msg.LocationID,
+		PeoplePresent: msg.PeoplePresent,
+		Text:          msg.Reason,
+	}
+	if crMsg.PeoplePresent {
+		crMsg.OnOff = 1
+	}
+	if msg.Action == "increase heating" && crMsg.Device == "aircon" {
+		crMsg.OnOff = 0
+	} else {
+		crMsg.OnOff = 1
+	}
+
+	return &crMsg, nil
 }
