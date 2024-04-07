@@ -43,7 +43,7 @@ async function captureImage() {
       const formData = new FormData();
       formData.append("data", blob);
 
-      // const response = await fetch(`http://localhost:8081/img?roomID=${roomID}`,{
+      // const response = await fetch(`http://localhost:8080/img?roomID=${roomID}`,{
       const response = await fetch(`https://sensaide-onsvm4sjba-uw.a.run.app/img?roomID=${roomID}`,{
         method: "POST",
         body: formData,
