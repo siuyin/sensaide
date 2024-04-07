@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Light and Aircon Data</title>
+</head>
+<body>
+    <h1>Light and Aircon Data</h1>
+    <div id="lightData12"></div>
+    <div id="lightData34"></div>
+    <div id="airconData12"></div>
+    <div id="lightData34_2"></div>
+    <script>
+        async function fetchData(url, elementId) {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Error fetching data from ${url}: ${response.statusText}`);
+            }
+            const data = await response.json();
+
+            const dataElement = document.getElementById(elementId);
+            let textContent = "No data available.";
+
+            if (data.length > 0) {
+                const lightInfo = data[0];
+
+                // Display source URL as clickable link
+                textContent = `Source: <a href="${url}">${url}</a><br><br>`;
+
+                // Handle different data structures (light vs aircon)
+                if (url.includes("lights")) {
+                    const jsonData = JSON.parse(lightInfo.json);
+                    textContent += `Text: ${jsonData.text}<br> On/Off: ${jsonData.on_off === 1 ? "On" : "Off"}<br> Date & Time: ${lightInfo.datetime}<br><br>`;
+                } else if (url.includes("aircon")) {
+                    // Modify this part to handle aircon data (assuming different structure)
+                    textContent += `Aircon data not implemented yet. Data: ${JSON.stringify(lightInfo)}<br><br>`;
+                }
+            }
+
+            dataElement.innerHTML = textContent;
+        }
+
+        // Call fetchData for each URL and handle errors
+        fetchData('https://spgroup24.alwaysdata.net/lights/12', 'lightData12')
+            .catch(error => {
+                document.getElementById('lightData12').innerHTML = "Error fetching light data 12: " + error.message;
+            });
+
+        fetchData('https://spgroup24.alwaysdata.net/lights/34', 'lightData34')
+            .catch(error => {
+                document.getElementById('lightData34').innerHTML = "Error fetching light data 34: " + error.message;
+            });
+
+        fetchData('https://spgroup24.alwaysdata.net/aircon/12', 'airconData12')
+            .catch(error => {
+                document.getElementById('airconData12').innerHTML = "Error fetching aircon data 12: " + error.message;
+            });
+
+        fetchData('https://spgroup24.alwaysdata.net/lights/34', 'lightData34_2')
+            .catch(error => {
+                document.getElementById('lightData34_2').innerHTML = "Error fetching light data 34 (duplicate): " + error.message;
+            });
+    </script>
+</body>
+</html>

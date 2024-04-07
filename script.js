@@ -2,34 +2,26 @@
 const lightButtons = document.querySelectorAll('.room button:first-child');
 const airconButtons = document.querySelectorAll('.room button:last-child');
 
-// Function to update button state based on value
-function updateButton(button, value) {
-  button.classList.toggle('on', value === 1);
-  button.textContent = value === 1 ? 'On' : 'Off';
+// Function to toggle button state
+function toggleButton(button) {
+  const currentState = button.classList.contains('on');
+  button.classList.toggle('on');
+  button.textContent = currentState ? 'Light: Off' : 'Light: On';  // Update light text
+  // Replace with your actual light control logic using the current state (on/off)
+  console.log(`Light in ${button.id.split('-')[0]} & ${button.id.split('-')[1]} is now ${currentState ? 'off' : 'on'}`);
 }
 
-// Function to fetch and update room light state
-function updateRoomLight(roomId, url) {
-  fetch(url)
-    .then(response => response.json())
-    .then(data => updateButton(document.getElementById(`room${roomId}-light`), data.value));
+// Add click event listeners to light buttons
+lightButtons.forEach(button => button.addEventListener('click', () => toggleButton(button)));
+
+// Function to toggle aircon button state (similar logic as light buttons)
+function toggleAirconButton(button) {
+  const currentState = button.classList.contains('on');
+  button.classList.toggle('on');
+  button.textContent = currentState ? 'Aircon Light: Off' : 'Aircon Light: On';
+  // Replace with your actual aircon light control logic using the current state (on/off)
+  console.log(`Aircon light in ${button.id.split('-')[0]} & ${button.id.split('-')[1]} is now ${currentState ? 'off' : 'on'}`);
 }
 
-// Function to fetch and update room aircon light state (similar to updateRoomLight)
-function updateRoomAirconLight(roomId, url) {
-  fetch(url)
-    .then(response => response.json())
-    .then(data => updateButton(document.getElementById(`room${roomId}-aircon`), data.value));
-}
-
-// Update light status every second
-setInterval(() => {
-  updateRoomLight(12, 'https://spgroup24.alwaysdata.net/lights/12');
-  updateRoomLight(34, 'https://spgroup24.alwaysdata.net/lights/34');
-}, 1000);
-
-// Update aircon light status every second (similar logic as updateRoomLight)
-setInterval(() => {
-  updateRoomAirconLight(12, 'https://spgroup24.alwaysdata.net/aircon/12');
-  updateRoomAirconLight(34, 'https://spgroup24.alwaysdata.net/aircon/34');
-}, 1000);
+// Add click event listeners to aircon buttons
+airconButtons.forEach(button => button.addEventListener('click', () => toggleAirconButton(button)));

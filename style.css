@@ -31,11 +31,13 @@ button {
   cursor: pointer;
 }
 
-button.on {
+#room12-light.on,
+#room34-light.on {
   background-color: yellow;
 }
 
-button.off {
+#room12-light.off,
+#room34-light.off {
   background-color: grey;
 }
 
