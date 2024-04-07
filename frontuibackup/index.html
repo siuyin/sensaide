@@ -18,10 +18,15 @@
 <div class="q-pa-md items-start  q-gutter-md">
     <div class="row  q-gutter-md">
     <q-card id="room1l" class="text-white" :class="{ 'bg-green': R1LisOn, 'bg-red': !R1LisOn }">
-      <q-card-section>
-        <div class="text-h6">Room 12</div>
-        <div class="text-subtitle2">Lights</div>
-      </q-card-section>
+        <q-card-section>
+            <q-item>
+                <q-item-section avatar><q-icon name="lightbulb" size="32px"></q-icon></q-item-section>
+                <q-item-section>
+                    <div class="text-h6">Room 12</div>
+                    <div class="text-subtitle2">Lights</div>
+                </q-item-section>
+            </q-item>
+            </q-card-section>
 
       <q-card-section>
         {{ room1L }}
@@ -30,9 +35,14 @@
     </q-card>
     <q-card id="room2l" class="text-white" :class="{ 'bg-green': R2LisOn, 'bg-red': !R2LisOn }">
         <q-card-section>
-          <div class="text-h6">Room 32</div>
-          <div class="text-subtitle2">Lights</div>
-        </q-card-section>
+            <q-item>
+                <q-item-section avatar><q-icon name="lightbulb" size="32px"></q-icon></q-item-section>
+                <q-item-section>
+                    <div class="text-h6">Room 34</div>
+                    <div class="text-subtitle2">Lights</div>
+                </q-item-section>
+            </q-item>
+            </q-card-section>
   
         <q-card-section>
           {{ room2L }}
@@ -43,8 +53,13 @@
     <div class="row  q-gutter-md">
         <q-card id="room1a" class="text-white" :class="{ 'bg-blue': R1AisOn, 'bg-grey': !R1AisOn }">
             <q-card-section>
-              <div class="text-h6">Room 12</div>
-              <div class="text-subtitle2">Aircon</div>
+            <q-item>
+                <q-item-section avatar><q-icon name="ac_unit" size="32px"></q-icon></q-item-section>
+                <q-item-section>
+                    <div class="text-h6">Room 12</div>
+                    <div class="text-subtitle2">Aircon</div>
+                </q-item-section>
+            </q-item>
             </q-card-section>
       
             <q-card-section>
@@ -53,10 +68,15 @@
       
           </q-card>
           <q-card id="room2a" class="text-white" :class="{ 'bg-blue': R2AisOn, 'bg-grey': !R2AisOn }">
-              <q-card-section>
-                <div class="text-h6">Room 32</div>
-                <div class="text-subtitle2">Aircon</div>
-              </q-card-section>
+            <q-card-section>
+                <q-item>
+                    <q-item-section avatar><q-icon name="ac_unit" size="32px"></q-icon></q-item-section>
+                    <q-item-section>
+                        <div class="text-h6">Room 34</div>
+                        <div class="text-subtitle2">Aircon</div>
+                    </q-item-section>
+                </q-item>
+                </q-card-section>
         
               <q-card-section>
                 {{ room2A }}
