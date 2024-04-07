@@ -1,69 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Light and Aircon Data</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Light and Aircon Data</title>
+  <style>
+    .data-container {
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .data-container.lights-on {
+      background-color: yellow;
+    }
+    .data-container.lights-off {
+      background-color: grey;
+    }
+    .data-container.aircon-on {
+      background-color: blue;
+    }
+    .data-container.aircon-off {
+      background-color: red;
+    }
+  </style>
 </head>
 <body>
-  <h1>Light and Aircon Data</h1>
-  <div id="allData"></div>
-  <script>
-    async function fetchAndDisplayData(urls) {
-      const dataElements = [];
-      for (const url of urls) {
-        const dataElement = document.createElement('div');
-        dataElements.push(dataElement);
+  <h1>Light and Aircon Data</h1>
+  <div id="allData"></div>
+  <script>
+    async function fetchAndDisplayData(urls) {
+      const dataElements = [];
+      for (const url of urls) {
+        const dataElement = document.createElement('div');
+        dataElements.push(dataElement);
+        dataElement.classList.add('data-container');
 
-        try {
-          const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error(`Error fetching data from ${url}: ${response.statusText}`);
-          }
-          const data = await response.json();
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Error fetching data from ${url}: ${response.statusText}`);
+          }
+          const data = await response.json();
 
-          let textContent = "";
-          if (data.length > 0) {
-                textContent += `Source: <a href="${url}">${url}</a><br><br>`;
+          let textContent = "";
+          if (data.length > 0) {
+            textContent += `Source: <a href="${url}">${url}</a><br><br>`;
 
-                const parsedData = JSON.parse(data[0].json);
+            const parsedData = JSON.parse(data[0].json);
 
-                // Display all fetched data
-                textContent += `ID: ${data[0].id}<br>`;
-                textContent += `Room: ${data[0].room}<br>`;
-                textContent += `Type: ${data[0].type}<br>`;
-                textContent += `RoomID: ${parsedData.RoomID}<br>`;
-                textContent += `Text: ${parsedData.text}<br>`;
-                textContent += `Device: ${parsedData.Device}<br>`;
-                textContent += `On/Off: ${parsedData.on_off === 1 ? "On" : "Off"}<br>`;
-                textContent += `People Present: ${parsedData.PeoplePresent}<br>`;
-                textContent += `Date & Time: ${data[0].datetime}<br><br>`;
-          } else {
-                textContent = "No data available.";
+            // Display all fetched data
+            textContent += `ID: ${data[0].id}<br>`;
+            textContent += `Room: ${data[0].room}<br>`;
+            textContent += `Type: ${data[0].type}<br>`;
+            textContent += `RoomID: ${parsedData.RoomID}<br>`;
+            textContent += `Text: ${parsedData.text}<br>`;
+            textContent += `Device: ${parsedData.Device}<br>`;
+            textContent += `On/Off: ${parsedData.on_off === 1 ? "On" : "Off"}<br>`;
+            textContent += `People Present: ${parsedData.PeoplePresent}<br>`;
+            textContent += `Date & Time: ${data[0].datetime}<br><br>`;
+
+            // Set background color based on light and aircon status (handle empty class names)
+            const lightStatus = parsedData.Device === "lights" ? (parsedData.on_off === 1 ? 'lights-on' : 'lights-off') : '';
+            const airconStatus = parsedData.Device === "aircon" ? (parsedData.on_off === 1 ? 'aircon-on' : 'aircon-off') : '';
+            if (lightStatus) {
+              dataElement.classList.add(lightStatus);
             }
+            if (airconStatus) {
+              dataElement.classList.add(airconStatus);
+            }
+          } else {
+            textContent = "No data available.";
+          }
 
-          dataElement.innerHTML = textContent;
-        } catch (error) {
-          dataElement.innerHTML = `Error fetching data: ${error.message}`;
-        }
-      }
+          dataElement.innerHTML = textContent;
+        } catch (error) {
+          dataElement.innerHTML = `Error fetching data: ${error.message}`;
+        }
+      }
 
-      // Append all data elements with a line break between them
-      const allDataElement = document.getElementById('allData');
-      dataElements.forEach(element => {
-        allDataElement.appendChild(element);
-        allDataElement.appendChild(document.createElement('br'));
-      });
-    }
+      // Append all data elements with a line break between them
+      const allDataElement = document.getElementById('allData');
+      dataElements.forEach(element => {
+        allDataElement.appendChild(element);
+        allDataElement.appendChild(document.createElement('br'));
+      });
+    }
 
-    const urls = [
-      'https://spgroup24.alwaysdata.net/lights/12',
-      'https://spgroup24.alwaysdata.net/lights/34',
-      'https://spgroup24.alwaysdata.net/aircon/12',
-      'https://spgroup24.alwaysdata.net/aircon/34'
-    ];
+    const urls = [
+      'https://spgroup24.alwaysdata.net/lights/12',
+      'https://spgroup24.alwaysdata.net/lights/34',
+      'https://spgroup24.alwaysdata.net/aircon/12',
+      'https://spgroup24.alwaysdata.net/aircon/34'
+    ];
 
-    fetchAndDisplayData(urls);
-  </script>
+    fetchAndDisplayData(urls);
+  </script>
 </body>
 </html>
