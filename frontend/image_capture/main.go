@@ -19,7 +19,8 @@ import (
 )
 
 const projectID = "lsy0318"
-//const location = "us-west1"
+
+// const location = "us-west1"
 const location = "asia-southeast1"
 
 type vertexResponse struct {
@@ -76,7 +77,7 @@ func callVertexAI(b []byte, roomID string) string {
 	model := client.GenerativeModel("gemini-1.0-pro-vision-001")
 	model.SetTemperature(0.1)
 	img := genai.ImageData("jpeg", b)
-	prompt := genai.Text(fmt.Sprintf(`The image above is in LocationID: "%s" which is always a string. Detect if people are present (PeoplePresent: true or false). Recommend if they can benefit from Action: "increase cooling" or Action: "increase heating". Output in JSON format with fields PeoplePresent, Action, Reason, LocationID. Answer in the opposite.`, roomID)
+	prompt := genai.Text(fmt.Sprintf(`The image above is in LocationID: "%s" which is always a string. Detect if people are present (PeoplePresent: true or false). Recommend if they can benefit from Action: "increase cooling" or Action: "increase heating". Output in JSON format with fields PeoplePresent, Action, Reason, LocationID. Answer in the opposite.`, roomID))
 	//prompt := genai.Text(fmt.Sprintf(`Tell me about the people, if any (PeoplePresent true or false), in the image at Location ID:"%s" (which is a string not a number) do they look like they can benefit from better cooling or heating. Explain your reasoning. Finally mention if additional cooling or warming is warranted by stating action: increase cooling or action: increase warming in your response. or action: no action required Also include the Location ID in your response. output in JSON format with fields PeoplePresent, Action, Reason, LocationID`, roomID))
 	resp, err := model.GenerateContent(ctx, img, prompt)
 	if err != nil {
@@ -179,7 +180,7 @@ func deviceControl(msg *vertexResponse, dev string) (*controlRoomMessage, error)
 
 	if msg.Action == "increase heating" && crMsg.Device == "aircon" && crMsg.PeoplePresent {
 		crMsg.OnOff = 0
-	} 
+	}
 	if msg.Action == "increase cooling" && crMsg.Device == "aircon" && crMsg.PeoplePresent {
 		crMsg.OnOff = 1
 	}
