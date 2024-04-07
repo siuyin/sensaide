@@ -75,7 +75,7 @@ func callVertexAI(b []byte, roomID string) string {
 	model := client.GenerativeModel("gemini-1.0-pro-vision-001")
 	model.SetTemperature(0.3)
 	img := genai.ImageData("jpeg", b)
-	prompt := genai.Text(fmt.Sprintf(`Tell me about the people, if any (PeoplePresent true or false), in the image at Location ID:"%s" do they look like they can benefit from better cooling or heating. Explain your reasoning. Finally mention if additional cooling or warming is warranted by stating action: increase cooling or action: increase warming in your response. or action: no action required Also include the Location ID in your response. output in JSON format with fields PeoplePresent, Action, Reason, LocationID`, roomID))
+	prompt := genai.Text(fmt.Sprintf(`Tell me about the people, if any (PeoplePresent true or false), in the image at Location ID:"%s" do they look like they can benefit from better cooling or heating. Explain your reasoning. Finally mention if additional cooling or warming is warranted by stating action: increase cooling or action: increase warming in your response. or action: no action required Also include the Location ID in your response. output in JSON format with fields PeoplePresent, Action, Reason, LocationID as a string`, roomID))
 	resp, err := model.GenerateContent(ctx, img, prompt)
 	if err != nil {
 		log.Printf("error on generate content: %v", err)
@@ -131,19 +131,19 @@ func stripHeaderAndFooter(s string) string {
 
 func updateControlRoom(msg *vertexResponse) error {
 	crMsg, err := deviceControl(msg, "aircon")
-	if err!=nil {
-		return fmt.Errorf("updateControlRoom: deviceControl: %v",err)
+	if err != nil {
+		return fmt.Errorf("updateControlRoom: deviceControl: %v", err)
 	}
 	if err := callBackendUI(crMsg); err != nil {
-		return fmt.Errorf("updateControlRoom: callBackendUI: %v",err)
+		return fmt.Errorf("updateControlRoom: callBackendUI: %v", err)
 	}
 
 	crMsg, err = deviceControl(msg, "lights")
-	if err!=nil {
-		return fmt.Errorf("updateControlRoom: deviceControl: %v",err)
+	if err != nil {
+		return fmt.Errorf("updateControlRoom: deviceControl: %v", err)
 	}
 	if err := callBackendUI(crMsg); err != nil {
-		return fmt.Errorf("updateControlRoom: callBackendUI: %v",err)
+		return fmt.Errorf("updateControlRoom: callBackendUI: %v", err)
 	}
 
 	return nil
