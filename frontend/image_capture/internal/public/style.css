@@ -6,6 +6,10 @@
     background-color: red;
 }
 
+#capture-button:active {
+    background-color: red;
+}
+
 .min {
     width: fit-content;
 }
