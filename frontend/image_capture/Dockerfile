@@ -1,7 +1,7 @@
 FROM golang:1.22.1 as build
 WORKDIR /src
 COPY . /src/
-RUN  GOOS=linux GOARCH=amd64 go build -o /bin/app main.go
+RUN  CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /bin/app main.go
 
 FROM gcr.io/distroless/static-debian12:nonroot
 COPY --from=build /bin/app /bin/app
