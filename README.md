@@ -2,8 +2,8 @@
 Sensor AI assistance.
 
 Collaborators:
-- Siu Yin
-- Kit Siew
-- Calvin Wijaya
-- JC Tan
-- JW
+- Siu Yin : Project lead
+- Kit Siew : Prompt engineer
+- Calvin Wijaya : UI connection to Vertex AI API
+- JC Tan : Control room mockup/dashboard
+- JW : UI engineer
